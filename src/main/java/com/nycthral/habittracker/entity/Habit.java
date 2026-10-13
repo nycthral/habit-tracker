@@ -1,12 +1,32 @@
 package com.nycthral.habittracker.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "habits")
+
 public class Habit {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "target", nullable = false)
     private int target;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     public Long getId() {
