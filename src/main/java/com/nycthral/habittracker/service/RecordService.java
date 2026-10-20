@@ -4,7 +4,7 @@ import com.nycthral.habittracker.dto.RecordResponse;
 import com.nycthral.habittracker.entity.Record;
 import org.springframework.stereotype.Service;
 import com.nycthral.habittracker.repository.RecordRepository;
-
+import com.nycthral.habittracker.entity.Habit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +26,14 @@ public class RecordService {
 
     public RecordResponse create(Long habitId) {
         log.info("Creating record for habit id: {}", habitId);
-        habitService.getById(habitId);
+        Habit habit = habitService.getEntityById(habitId);
         Record record = new Record();
-        record.setHabitId(habitId);
+        record.setHabit(habit);
         record.setDate(LocalDate.now());
         Record saved = recordRepository.save(record);
         return new RecordResponse(
                 saved.getId(),
-                saved.getHabitId(),
+                saved.getHabit().getId(),
                 saved.getDate()
         );
     }
@@ -44,7 +44,7 @@ public class RecordService {
         for (Record record : recordRepository.findByHabitId(habitId)) {
             recordResponses.add(new RecordResponse(
                     record.getId(),
-                    record.getHabitId(),
+                    record.getHabit().getId(),
                     record.getDate()
             ));
         }

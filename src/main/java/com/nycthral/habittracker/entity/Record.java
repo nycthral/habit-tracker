@@ -1,12 +1,6 @@
 package com.nycthral.habittracker.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -17,8 +11,9 @@ public class Record {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "habit_id", nullable = false)
-    private Long habitId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "habit_id", nullable = false)
+    private Habit habit;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
@@ -31,12 +26,12 @@ public class Record {
         this.id = id;
     }
 
-    public Long getHabitId() {
-        return habitId;
+    public Habit getHabit() {
+        return habit;
     }
 
-    public void setHabitId(Long habitId) {
-        this.habitId = habitId;
+    public void setHabit(Habit habit) {
+        this.habit = habit;
     }
 
     public LocalDate getDate() {
