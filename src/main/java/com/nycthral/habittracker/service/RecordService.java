@@ -7,6 +7,7 @@ import com.nycthral.habittracker.repository.RecordRepository;
 import com.nycthral.habittracker.entity.Habit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class RecordService {
         this.habitService = habitService;
     }
 
+    @Transactional
     public RecordResponse create(Long habitId) {
         log.info("Creating record for habit id: {}", habitId);
         Habit habit = habitService.getEntityById(habitId);
@@ -38,6 +40,7 @@ public class RecordService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<RecordResponse> getByHabitId(Long habitId) {
         habitService.getById(habitId);
         List<RecordResponse> recordResponses = new ArrayList<>();

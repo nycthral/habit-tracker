@@ -5,6 +5,7 @@ import com.nycthral.habittracker.dto.HabitResponse;
 import com.nycthral.habittracker.entity.Habit;
 import org.springframework.stereotype.Service;
 import com.nycthral.habittracker.repository.HabitRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class HabitService {
         this.habitRepository = habitRepository;
     }
 
+    @Transactional
     public HabitResponse create(HabitRequest request) {
         log.info("Creating habit with name: {}", request.getName());
         Habit habit = new Habit();
@@ -35,15 +37,18 @@ public class HabitService {
         return new HabitResponse(saved.getId(), saved.getName(), saved.getDescription(), saved.getTarget(), saved.getCreatedAt());
     }
 
+    @Transactional(readOnly = true)
     public HabitResponse getById(Long id) {
         Habit habit = habitRepository.findById(id).orElseThrow(() -> new HabitNotFoundException(id));
         return new HabitResponse(habit.getId(), habit.getName(), habit.getDescription(), habit.getTarget(), habit.getCreatedAt());
     }
 
+    @Transactional(readOnly = true)
     public Habit getEntityById(Long id) {
         return habitRepository.findById(id).orElseThrow(() -> new HabitNotFoundException(id));
     }
 
+    @Transactional(readOnly = true)
     public List<HabitResponse> getAll() {
         List<HabitResponse> result = new ArrayList<>();
         for (Habit habit : habitRepository.findAll()) {
@@ -52,6 +57,7 @@ public class HabitService {
         return result;
     }
 
+    @Transactional
     public HabitResponse update(Long id, HabitRequest request) {
         log.info("Updating habit with id: {}", id);
         Habit habit = habitRepository.findById(id).orElseThrow(() -> new HabitNotFoundException(id));
@@ -62,6 +68,7 @@ public class HabitService {
         return new HabitResponse(saved.getId(), saved.getName(), saved.getDescription(), saved.getTarget(), saved.getCreatedAt());
     }
 
+    @Transactional
     public void delete(Long id) {
         log.info("Deleting habit with id: {}", id);
         if (!habitRepository.existsById(id)) {

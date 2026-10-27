@@ -5,6 +5,7 @@ import com.nycthral.habittracker.entity.Habit;
 import com.nycthral.habittracker.entity.Record;
 import com.nycthral.habittracker.repository.RecordRepository;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -12,9 +13,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class StatsService {
 
+    @Transactional(readOnly = true)
     public int calculateCurrentStreak(List<Record> records) {
         List<LocalDate> dates = records.stream()
                 .map(Record::getDate)
@@ -34,6 +38,7 @@ public class StatsService {
         return streak;
     }
 
+    @Transactional(readOnly = true)
     public WeekStatsResponse getWeekStats() {
         List<HabitResponse> habits = habitService.getAll();
         int totalCount = habits.size();
@@ -50,6 +55,7 @@ public class StatsService {
         return new WeekStatsResponse(week);
     }
 
+    @Transactional(readOnly = true)
     public int calculateBestStreak(List<Record> records) {
         List<LocalDate> dates = records.stream()
                 .map(Record::getDate)
@@ -72,6 +78,7 @@ public class StatsService {
         return best;
     }
 
+    @Transactional(readOnly = true)
     public DailyStatsResponse getDailyStats() {
         LocalDate today = LocalDate.now();
         List<HabitResponse> habits = habitService.getAll();
@@ -87,6 +94,7 @@ public class StatsService {
         return new DailyStatsResponse(today, statuses);
     }
 
+    @Transactional(readOnly = true)
     public double calculateCompletionRate(List<Record> records, Habit habit) {
         long totalDays = ChronoUnit.DAYS.between(habit.getCreatedAt().toLocalDate(), LocalDate.now());
         double rate = (records.size() * 100.0) / Math.max(totalDays, 1);
@@ -101,6 +109,7 @@ public class StatsService {
         this.recordRepository = recordRepository;
     }
 
+    @Transactional(readOnly = true)
     public StatsResponse getHabitStats(Long habitId) {
         Habit habit = habitService.getEntityById(habitId);
         List<Record> records = recordRepository.findByHabitId(habitId);
